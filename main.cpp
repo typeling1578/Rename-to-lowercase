@@ -5,9 +5,26 @@
 #include <stdio.h>
 
 int main(int argc, char *argv[]){
+    bool force = false;
+    std::string path_str;
+    for (int i = 1; i < argc; i++) {
+        std::string arg = argv[i];
+        if (arg == "-f") {
+            force = true;
+        } else {
+            path_str = arg;
+        }
+    }
+    if (!force) {
+        std::cout << path_str + ", Are you sure (y)? ";
+        std::string input;
+        std::cin >> input;
+        if (input != "y") {
+            return 0;
+        }
+    }
     std::cout << "Processing..." << "\n";
     std::vector<std::filesystem::path> list;
-    std::string path_str = argv[1];
     const std::filesystem::path& path = path_str;
     for(const auto& p: std::filesystem::recursive_directory_iterator(path)) {
         list.push_back(p.path());
