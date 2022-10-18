@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
 
         if (oldpath != newpath) {
             if (rename(oldpath.c_str(), newpath.c_str()) != 0) {
-                printf("Could not rename %s to %s.", oldpath.c_str(), newpath.c_str());
+                printf("Could not rename %s to %s.\n", oldpath.c_str(), newpath.c_str());
                 continue;
             }
             if (std::filesystem::exists(oldpath)) {
@@ -52,11 +52,11 @@ int main(int argc, char *argv[]){
                 std::string rnd = std::to_string(rand());
                 std::string intermediatepath = parent_path + "/" + filename + "_rename_" + rnd;
                 if (rename(oldpath.c_str(), intermediatepath.c_str()) != 0) {
-                    printf("Could not rename %s to %s.", oldpath.c_str(), intermediatepath.c_str());
+                    printf("Could not rename %s to %s.\n", oldpath.c_str(), intermediatepath.c_str());
                     continue;
                 }
                 if (rename(intermediatepath.c_str(), newpath.c_str()) != 0) {
-                    printf("Could not rename %s to %s.", intermediatepath.c_str(), newpath.c_str());
+                    printf("Could not rename %s to %s.\n", intermediatepath.c_str(), newpath.c_str());
                     continue;
                 }
             }
