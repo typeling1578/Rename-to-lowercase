@@ -27,6 +27,11 @@ jobs:
         mkdir -p dist/aarch64-linux-gnu
         aarch64-linux-gnu-g++ -std=c++17 -O3 --static main.cpp -o dist/aarch64-linux-gnu/rtlc
 
+    - name: Build Windows i686
+      run: |
+        mkdir -p dist/i686-w64-mingw32
+        i686-w64-mingw32-g++ -std=c++17 -O3 --static main.cpp -o dist/i686-w64-mingw32/rtlc.exe
+
     - name: Build Windows x86_64
       run: |
         mkdir -p dist/x86_64-w64-mingw32
@@ -43,6 +48,12 @@ jobs:
       with:
         name: aarch64-linux-gnu
         path: dist/aarch64-linux-gnu
+
+    - name: Publish Windows i686
+      uses: actions/upload-artifact@master
+      with:
+        name: i686-w64-mingw32
+        path: dist/i686-w64-mingw32
 
     - name: Publish Windows x86_64
       uses: actions/upload-artifact@master
