@@ -60,3 +60,19 @@ jobs:
       with:
         name: x86_64-w64-mingw32
         path: dist/x86_64-w64-mingw32
+
+  build-mac:
+    runs-on: macos-11
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build macOS x86_64
+      run: |
+        mkdir -p dist/x86_64-apple-darwin
+        g++ -std=c++17 -O3 main.cpp -o dist/x86_64-apple-darwin/rtlc
+    - name: Publish macOS x86_64
+      uses: actions/upload-artifact@master
+      with:
+        name: x86_64-apple-darwin
+        path: dist/x86_64-apple-darwin
