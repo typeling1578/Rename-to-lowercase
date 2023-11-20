@@ -17,49 +17,47 @@ jobs:
         sudo apt update
         sudo apt install g++ g++-aarch64-linux-gnu g++-mingw-w64
 
+        curl --proto '=https' --tlsv1.2 -f https://sh.rustup.rs -o rust-setup.sh
+        chmod +x rust-setup.sh
+        ./rust-setup.sh -y
+        source ~/.cargo/env
+        rustup target add x86_64-pc-windows-gnu
+        rustup target add aarch64-unknown-linux-gnu
+
+        mkdir .cargo
+        cat <<EOF > .cargo/config
+        [target.aarch64-unknown-linux-gnu]
+        linker = "aarch64-linux-gnu-gcc"
+        [target.x86_64-pc-windows-gnu]
+        linker = "x86_64-w64-mingw32-gcc"
+        EOF
+
     - name: Build Linux x86_64
       run: |
-        mkdir -p dist/x86_64-linux-gnu
-        g++ -std=c++17 -O3 --static main.cpp -o dist/x86_64-linux-gnu/rtlc
-
-    - name: Build Linux aarch64
-      run: |
-        mkdir -p dist/aarch64-linux-gnu
-        aarch64-linux-gnu-g++ -std=c++17 -O3 --static main.cpp -o dist/aarch64-linux-gnu/rtlc
-
-    - name: Build Windows i686
-      run: |
-        mkdir -p dist/i686-w64-mingw32
-        i686-w64-mingw32-g++ -std=c++17 -O3 --static main.cpp -o dist/i686-w64-mingw32/rtlc.exe
-
-    - name: Build Windows x86_64
-      run: |
-        mkdir -p dist/x86_64-w64-mingw32
-        x86_64-w64-mingw32-g++ -std=c++17 -O3 --static main.cpp -o dist/x86_64-w64-mingw32/rtlc.exe
-
+        cargo build --release --target=x86_64-unknown-linux-gnu
     - name: Publish Linux x86_64
       uses: actions/upload-artifact@master
       with:
-        name: x86_64-linux-gnu
-        path: dist/x86_64-linux-gnu
+        name: x86_64-unknown-linux-gnu
+        path: target/x86_64-unknown-linux-gnu/release/rtlc
 
+    - name: Build Linux aarch64
+      run: |
+        cargo build --release --target=aarch64-unknown-linux-gnu
     - name: Publish Linux aarch64
       uses: actions/upload-artifact@master
       with:
-        name: aarch64-linux-gnu
-        path: dist/aarch64-linux-gnu
+        name: aarch64-unknown-linux-gnu
+        path: target/aarch64-unknown-linux-gnu/release/rtlc
 
-    - name: Publish Windows i686
-      uses: actions/upload-artifact@master
-      with:
-        name: i686-w64-mingw32
-        path: dist/i686-w64-mingw32
-
+    - name: Build Windows x86_64
+      run: |
+        cargo build --release --target=x86_64-pc-windows-gnu
     - name: Publish Windows x86_64
       uses: actions/upload-artifact@master
       with:
-        name: x86_64-w64-mingw32
-        path: dist/x86_64-w64-mingw32
+        name: x86_64-pc-windows-gnu
+        path: target/x86_64-pc-windows-gnu/release/rtlc.exe
 
   build-mac:
     runs-on: macos-11
@@ -67,12 +65,28 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Setup
+      run: |
+        curl --proto '=https' --tlsv1.2 -f https://sh.rustup.rs -o rust-setup.sh
+        chmod +x rust-setup.sh
+        ./rust-setup.sh -y
+        source ~/.cargo/env
+        rustup target add aarch64-apple-darwin
+
     - name: Build macOS x86_64
       run: |
-        mkdir -p dist/x86_64-apple-darwin
-        g++ -std=c++17 -O3 main.cpp -o dist/x86_64-apple-darwin/rtlc
+        cargo build --release --target=x86_64-apple-darwin
     - name: Publish macOS x86_64
       uses: actions/upload-artifact@master
       with:
         name: x86_64-apple-darwin
-        path: dist/x86_64-apple-darwin
+        path: target/x86_64-apple-darwin/release/rtlc
+
+    - name: Build macOS aarch64
+      run: |
+        cargo build --release --target=aarch64-apple-darwin
+    - name: Publish macOS aarch64
+      uses: actions/upload-artifact@master
+      with:
+        name: aarch64-apple-darwin
+        path: target/aarch64-apple-darwin/release/rtlc
