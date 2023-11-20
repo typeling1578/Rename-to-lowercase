@@ -17,7 +17,9 @@ jobs:
         sudo apt update
         sudo apt install g++ g++-aarch64-linux-gnu g++-mingw-w64
 
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -y
+        curl --proto '=https' --tlsv1.2 -f https://sh.rustup.rs -o rust-setup.sh
+        chmod +x rust-setup.sh
+        ./rust-setup.sh -y
         source ~/.cargo/env
         rustup add x86_64-pc-windows-gnu
         rustup add aarch64-unknown-linux-gnu
@@ -65,7 +67,9 @@ jobs:
 
     - name: Setup
       run: |
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -y
+        curl --proto '=https' --tlsv1.2 -f https://sh.rustup.rs -o rust-setup.sh
+        chmod +x rust-setup.sh
+        ./rust-setup.sh -y
         source ~/.cargo/env
         rustup add aarch64-apple-darwin
 
