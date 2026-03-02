@@ -22,6 +22,7 @@ jobs:
         ./rust-setup.sh -y
         source ~/.cargo/env
         rustup target add x86_64-pc-windows-gnu
+        rustup target add aarch64-pc-windows-gnu
         rustup target add aarch64-unknown-linux-gnu
 
         mkdir .cargo
@@ -58,6 +59,15 @@ jobs:
       with:
         name: x86_64-pc-windows-gnu
         path: target/x86_64-pc-windows-gnu/release/rtlc.exe
+
+    - name: Build Windows aarch64
+      run: |
+        cargo build --release --target=aarch64-pc-windows-gnu
+    - name: Publish Windows aarch64
+      uses: actions/upload-artifact@master
+      with:
+        name: aarch64-pc-windows-gnu
+        path: target/aarch64-pc-windows-gnu/release/rtlc.exe
 
   build-mac:
     runs-on: macos-26
