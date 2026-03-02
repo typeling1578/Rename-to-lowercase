@@ -37,7 +37,6 @@ jobs:
         tar -xf llvm-mingw.tar.xz
         sudo mv llvm-mingw-* /opt/llvm-mingw
         rm llvm-mingw.tar.xz
-        echo "/opt/llvm-mingw/bin" >> $GITHUB_PATH
 
     - name: Build Linux x86_64
       run: |
@@ -68,6 +67,7 @@ jobs:
 
     - name: Build Windows aarch64
       run: |
+        export PATH=/opt/llvm-mingw/bin:$PATH
         cargo build --release --target=aarch64-pc-windows-gnullvm
     - name: Publish Windows aarch64
       uses: actions/upload-artifact@master
